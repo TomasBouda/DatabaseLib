@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database.Lib", "Database.Lib\Database.Lib.csproj", "{27A17655-B321-4A86-86B2-2B3F2C75BBA6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database.Lib", "DatabaseLib\Database.Lib.csproj", "{27A17655-B321-4A86-86B2-2B3F2C75BBA6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dbconsole", "dbconsole\dbconsole.csproj", "{696AA862-A2C9-4BAC-8523-752BA04E8F54}"
 EndProject
