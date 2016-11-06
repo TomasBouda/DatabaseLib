@@ -50,7 +50,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Database.Lib\Database.Lib.csproj">
+    <ProjectReference Include="..\DatabaseLib\Database.Lib.csproj">
       <Project>{27A17655-B321-4A86-86B2-2B3F2C75BBA6}</Project>
       <Name>Database.Lib</Name>
     </ProjectReference>

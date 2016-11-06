@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Database.Lib
+namespace Database.Lib.Misc
 {
 	public static class Extensions
 	{

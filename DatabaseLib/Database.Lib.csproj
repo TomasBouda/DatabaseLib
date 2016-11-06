@@ -44,11 +44,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions.cs" />
-    <Compile Include="Handlers\DBHandler.cs" />
-    <Compile Include="Handlers\IDBHandler.cs" />
-    <Compile Include="Handlers\MSSQLHandler.cs" />
-    <Compile Include="Handlers\MySqlHandler.cs" />
+    <Compile Include="Data\DbObject.cs" />
+    <Compile Include="Data\IDbObject.cs" />
+    <Compile Include="Data\StoredProcedure.cs" />
+    <Compile Include="Data\Table.cs" />
+    <Compile Include="Data\View.cs" />
+    <Compile Include="Misc\EnumHelper.cs" />
+    <Compile Include="Misc\Extensions.cs" />
+    <Compile Include="DBMS\DB.cs" />
+    <Compile Include="DBMS\IDB.cs" />
+    <Compile Include="DBMS\MSSQL.cs" />
+    <Compile Include="DBMS\MySql.cs" />
+    <Compile Include="DatabaseManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

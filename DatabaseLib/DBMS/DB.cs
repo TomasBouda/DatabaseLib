@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Database.Lib.Handlers
+namespace Database.Lib.DBMS
 {
-	public abstract class DBHandler
+	public abstract class DB : IDisposable
 	{
-		protected DBHandler() { }
+		protected DB() { }
 
 		public IDbConnection Connection { get; set; }
 
@@ -19,6 +19,38 @@ namespace Database.Lib.Handlers
 		public virtual bool IsConnected
 		{
 			get { return Connection?.State == ConnectionState.Open; }
+		}
+
+		/// <summary>
+		/// Connects to a DB using given connection string
+		/// Use: Connect<TConncetion, TException>(connectionString, c => new TConncetion(c))
+		/// </summary>
+		/// <typeparam name="TConncetion"></typeparam>
+		/// <typeparam name="TException"></typeparam>
+		/// <param name="connectionString"></param>
+		/// <param name="conn"></param>
+		/// <returns></returns>
+		public bool Connect<TConncetion, TException>(string connectionString, Func<string, TConncetion> conn) 
+			where TConncetion : IDbConnection, new()
+			where TException : DbException
+		{
+			Connection = conn(connectionString);
+
+			try
+			{
+				Connection.Open();
+				return true;
+			}
+			catch (TException ex)	// TODO
+			{
+				Console.WriteLine(ex.Message);
+				return false;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+				return false;
+			}
 		}
 
 		public bool Disconnect()

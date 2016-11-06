@@ -4,11 +4,12 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Database.Lib.Data;
 using MySql.Data.MySqlClient;
 
-namespace Database.Lib.Handlers
+namespace Database.Lib.DBMS
 {
-	public class MySqlHandler : DBHandler, IDBHandler, IDisposable
+	public class MySql : DB, IDB<MySql>, IDisposable
 	{
 		public bool Connect(string connectionString)
 		{
@@ -25,12 +26,27 @@ namespace Database.Lib.Handlers
 			throw new NotImplementedException();
 		}
 
+		public DataSet ExecuteDataSet(string query)
+		{
+			throw new NotImplementedException();
+		}
+
 		public IDataReader ExecuteReader(string query)
 		{
 			throw new NotImplementedException();
 		}
 
 		public string ExecuteScalar(string query)
+		{
+			throw new NotImplementedException();
+		}
+
+		public IList<IDbObject<MySql>> GetAllObjects()
+		{
+			throw new NotImplementedException();
+		}
+
+		public DataSet GetColumnsInfo(string tableName)
 		{
 			throw new NotImplementedException();
 		}
@@ -56,6 +72,21 @@ namespace Database.Lib.Handlers
 		}
 
 		public IList<string> GetViews()
+		{
+			throw new NotImplementedException();
+		}
+
+		public IList<string> SearchColumn(string columnName)
+		{
+			throw new NotImplementedException();
+		}
+
+		public IList<string> SearchInScripts(string query)
+		{
+			throw new NotImplementedException();
+		}
+
+		int IDB<MySql>.Execute(string query)
 		{
 			throw new NotImplementedException();
 		}
