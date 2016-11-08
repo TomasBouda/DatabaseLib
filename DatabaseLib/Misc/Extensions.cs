@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Database.Lib.Misc
@@ -74,6 +75,57 @@ namespace Database.Lib.Misc
 			int diff = maxLength - text.Length;
 			return new string(' ', diff / 2) + text + new string(' ', (int)(diff / 2.0 + 0.5));
 
+		}
+
+		/// <summary>
+		/// Classic "SQL" Like function
+		/// </summary>
+		/// <param name="toSearch"></param>
+		/// <param name="toFind"></param>
+		/// <returns></returns>
+		public static bool Like(this string toSearch, string toFind)
+		{
+			return new Regex(@"\A" + new Regex(@"\.|\$|\^|\{|\[|\(|\||\)|\*|\+|\?|\\").Replace(toFind, ch => @"\" + ch).Replace('_', '.').Replace("%", ".*") + @"\z", RegexOptions.Singleline).IsMatch(toSearch);
+		}
+
+		public static IEnumerable<TSource> DistinctBy<TSource, TKey>
+	   (this IEnumerable<TSource> source,
+		Func<TSource, TKey> keySelector)
+		{
+			return source.DistinctBy(keySelector, null);
+		}
+
+		public static IEnumerable<TSource> DistinctBy<TSource, TKey>
+			(this IEnumerable<TSource> source,
+			 Func<TSource, TKey> keySelector,
+			 IEqualityComparer<TKey> comparer)
+		{
+			source.ThrowIfNull("source");
+			keySelector.ThrowIfNull("keySelector");
+			return DistinctByImpl(source, keySelector, comparer);
+		}
+
+		private static IEnumerable<TSource> DistinctByImpl<TSource, TKey>
+			(IEnumerable<TSource> source,
+			 Func<TSource, TKey> keySelector,
+			 IEqualityComparer<TKey> comparer)
+		{
+			HashSet<TKey> knownKeys = new HashSet<TKey>(comparer);
+			foreach (TSource element in source)
+			{
+				if (knownKeys.Add(keySelector(element)))
+				{
+					yield return element;
+				}
+			}
+		}
+
+		public static void ThrowIfNull<T>(this T data, string name) where T : class
+		{
+			if (data == null)
+			{
+				throw new ArgumentNullException(name);
+			}
 		}
 	}
 }

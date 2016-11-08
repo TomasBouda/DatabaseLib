@@ -39,7 +39,7 @@ namespace Database.Lib.DBMS
 
 		IList<string> GetStoredProcedures();
 
-		IList<IDbObject<T>> GetAllObjects();
+		IList<IDbObject<T>> GetObjects(EDbObjects including = EDbObjects.All);
 
 		string GetScriptFor(string objectName);
 

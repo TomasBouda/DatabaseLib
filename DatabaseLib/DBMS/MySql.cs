@@ -41,11 +41,6 @@ namespace Database.Lib.DBMS
 			throw new NotImplementedException();
 		}
 
-		public IList<IDbObject<MySql>> GetAllObjects()
-		{
-			throw new NotImplementedException();
-		}
-
 		public DataSet GetColumnsInfo(string tableName)
 		{
 			throw new NotImplementedException();
@@ -87,6 +82,11 @@ namespace Database.Lib.DBMS
 		}
 
 		int IDB<MySql>.Execute(string query)
+		{
+			throw new NotImplementedException();
+		}
+
+		public IList<IDbObject<MySql>> GetObjects(EDbObjects including = EDbObjects.All)
 		{
 			throw new NotImplementedException();
 		}

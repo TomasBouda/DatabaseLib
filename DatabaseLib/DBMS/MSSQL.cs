@@ -95,13 +95,18 @@ namespace Database.Lib.DBMS
 			return GetCollection<SqlConnection>("Procedures");
 		}
 
-		public IList<IDbObject<MSSQL>> GetAllObjects()
+		public IList<IDbObject<MSSQL>> GetObjects(EDbObjects including = EDbObjects.All)
 		{
 			var allObjects = new List<IDbObject<MSSQL>>();
 
-			allObjects.AddRange(GetTables().Select(x => new Table<MSSQL>(x, this)));
-			allObjects.AddRange(GetViews().Select(x => new View<MSSQL>(x, this)));
-			allObjects.AddRange(GetStoredProcedures().Select(x => new StoredProcedure<MSSQL>(x, this)));
+			if((including & (EDbObjects.Tables | EDbObjects.Columns)) != 0)
+				allObjects.AddRange(GetTables().Select(x => new Table<MSSQL>(x, this)));
+
+			if ((including & EDbObjects.Views) != 0)
+				allObjects.AddRange(GetViews().Select(x => new View<MSSQL>(x, this)));
+
+			if ((including & EDbObjects.StoredProcedures) != 0)
+				allObjects.AddRange(GetStoredProcedures().Select(x => new StoredProcedure<MSSQL>(x, this)));
 
 			return allObjects;
 		}
@@ -126,7 +131,7 @@ namespace Database.Lib.DBMS
 
 		public DataSet GetColumnsInfo(string tableName)
 		{
-			string script = @"SELECT 
+			string script = @"SELECT DISTINCT
 				c.name 'Column Name',
 				t.Name 'Data type',
 				c.max_length 'Max Length',
@@ -150,7 +155,7 @@ namespace Database.Lib.DBMS
 
 		public IList<string> SearchColumn(string columnName)
 		{
-			string script = @" SELECT DISTINCT c.name AS ColName, t.name AS TableName
+			string script = @"SELECT c.name AS ColName, t.name AS TableName
 				FROM sys.columns c
 					JOIN sys.tables t ON c.object_id = t.object_id
 				WHERE c.name LIKE '%{0}%'";

@@ -23,5 +23,10 @@ namespace Database.Lib.Data
 		{
 			Name = name;
 		}
+
+		public override string ToString()
+		{
+			return Name;
+		}
 	}
 }
