@@ -7,8 +7,11 @@ using System.Data.SqlClient;
 using System.Data;
 using Database.Lib.Data;
 using Database.Lib.Misc;
+using System.Text.RegularExpressions;
+using Database.Lib.DataProviders.ConnectionParams;
+using Database.Lib.Search;
 
-namespace Database.Lib.DBMS
+namespace Database.Lib.DataProviders
 {
 	public class MSSQL : DB, IDB<MSSQL>
 	{ 
@@ -19,23 +22,59 @@ namespace Database.Lib.DBMS
 			Connect(server, database, user, password);
 		}
 
-		public bool Connect(string server, string database, string user = null, string password = null)
+		public void Connect(string server, string database, string user = null, string password = null, string integratedSec = "SSPI")
 		{
-			string connectionString = $"Server={server};Integrated security=SSPI;database={database};" 
+			string connectionString = $"Server={server};Database={database};Integrated security={integratedSec};" 
 				+ (user != null && password != null ? $"User id={user};Password={password};" : "");
 
-			return Connect(connectionString);			
+			Connect(connectionString);			
 		}
 
-		public bool Connect(string connectionString)
+		public void Connect<TConn>(TConn @params) where TConn : IConnectionParams<MSSQL>
 		{
-			return Connect<SqlConnection, SqlException>(connectionString, c => new SqlConnection(c));
+			var connParams = @params as MSSQLConnectionParams;
+
+			Connect(connParams.Server, connParams.Database, connParams.Username, connParams.Password, connParams.IntegratedSecurity);
+		}
+
+		public void Connect(string connectionString)
+		{
+			Connect<SqlConnection, SqlException>(connectionString, c => new SqlConnection(c));
 		}
 
 		public int Execute(string query)
 		{
 			using(var cmd = new SqlCommand(query, (SqlConnection)Connection))
 				return cmd.ExecuteNonQuery();
+		}
+
+		public int ExecuteTransaction(string query)
+		{
+			int rows = 0;
+			foreach (var q in SplitSqlStatements(query))
+			{
+				using (var cmd = new SqlCommand(q, (SqlConnection)Connection, (SqlTransaction)Transaction))
+				{
+					rows += cmd.ExecuteNonQuery();
+				}
+			}
+			return rows;
+		}
+
+		public IEnumerable<string> SplitSqlStatements(string sqlScript)
+		{
+			// Split by "GO" statements
+			var statements = Regex.Split(
+					sqlScript,
+					@"^\s*GO\s*\d*\s*($|\-\-.*$)",
+					RegexOptions.Multiline |
+					RegexOptions.IgnorePatternWhitespace |
+					RegexOptions.IgnoreCase);
+
+			// Remove empties, trim, and return
+			return statements
+				.Where(x => !string.IsNullOrWhiteSpace(x))
+				.Select(x => x.Trim(' ', '\r', '\n'));
 		}
 
 		public string ExecuteScalar(string query)
@@ -66,6 +105,19 @@ namespace Database.Lib.DBMS
 			}
 		}
 
+		public SqlCommand CreateCommand(string query, CommandType type = CommandType.Text) // TODO
+		{
+			var cmd = new SqlCommand(query, (SqlConnection)Connection);
+			cmd.CommandType = type;
+			return cmd;
+		}
+
+		public int ExecuteCommand(SqlCommand cmd)
+		{
+			using(cmd)
+				return cmd.ExecuteNonQuery();
+		}
+
 		public int GetNumberOfRows(string table)
 		{
 			if (IsConnected)
@@ -80,19 +132,49 @@ namespace Database.Lib.DBMS
 				throw new Exception("Thre is no open connection!");
 		}
 
-		public IList<string> GetTables()
+		public IList<Tuple<string, string>> GetTables()
 		{
 			return GetCollection<SqlConnection>("Tables", new string[] { null, null, null, "BASE TABLE" });
 		}
 
-		public IList<string> GetViews()
+		public IList<Tuple<string, string>> GetViews()
 		{
 			return GetCollection<SqlConnection>("Views");
 		}
 
-		public IList<string> GetStoredProcedures()
+		public IList<Tuple<string, string>> GetStoredProcedures()
 		{
 			return GetCollection<SqlConnection>("Procedures");
+		}
+
+		public IList<string> GetTriggers(string tableName)
+		{
+			string script = @"SELECT
+				sysobjects.name AS trigger_name 
+				,USER_NAME(sysobjects.uid) AS trigger_owner 
+				,s.name AS table_schema 
+				,OBJECT_NAME(parent_obj) AS table_name 
+				,OBJECTPROPERTY( id, 'ExecIsUpdateTrigger') AS isupdate 
+				,OBJECTPROPERTY( id, 'ExecIsDeleteTrigger') AS isdelete 
+				,OBJECTPROPERTY( id, 'ExecIsInsertTrigger') AS isinsert 
+				,OBJECTPROPERTY( id, 'ExecIsAfterTrigger') AS isafter 
+				,OBJECTPROPERTY( id, 'ExecIsInsteadOfTrigger') AS isinsteadof 
+				,OBJECTPROPERTY(id, 'ExecIsTriggerDisabled') AS [disabled] 
+			FROM sysobjects 
+
+			INNER JOIN sysusers 
+				ON sysobjects.uid = sysusers.uid 
+
+			INNER JOIN sys.tables t 
+				ON sysobjects.parent_obj = t.object_id 
+
+			INNER JOIN sys.schemas s 
+				ON t.schema_id = s.schema_id 
+
+			WHERE sysobjects.type = 'TR' and OBJECT_NAME(parent_obj) = '{0}'";
+
+			var dataSet = ExecuteDataSet(string.Format(script, tableName));
+			return dataSet.ColToList("trigger_name");
 		}
 
 		public IList<IDbObject<MSSQL>> GetObjects(EDbObjects including = EDbObjects.All)
@@ -100,13 +182,13 @@ namespace Database.Lib.DBMS
 			var allObjects = new List<IDbObject<MSSQL>>();
 
 			if((including & (EDbObjects.Tables | EDbObjects.Columns)) != 0)
-				allObjects.AddRange(GetTables().Select(x => new Table<MSSQL>(x, this)));
+				allObjects.AddRange(GetTables().Select(x => new Table<MSSQL>(x.Item1, x.Item2, this)));
 
-			if ((including & EDbObjects.Views) != 0)
-				allObjects.AddRange(GetViews().Select(x => new View<MSSQL>(x, this)));
+			 if ((including & EDbObjects.Views) != 0)
+				allObjects.AddRange(GetViews().Select(x => new View<MSSQL>(x.Item1, x.Item2, this)));
 
 			if ((including & EDbObjects.StoredProcedures) != 0)
-				allObjects.AddRange(GetStoredProcedures().Select(x => new StoredProcedure<MSSQL>(x, this)));
+				allObjects.AddRange(GetStoredProcedures().Select(x => new StoredProcedure<MSSQL>(x.Item1, x.Item2, this)));
 
 			return allObjects;
 		}
@@ -129,9 +211,9 @@ namespace Database.Lib.DBMS
 			}
 		}
 
-		public DataSet GetColumnsInfo(string tableName)
+		public DataSet GetColumnsInfo(string schema, string tableName)
 		{
-			string script = @"SELECT DISTINCT
+			string script = $@"SELECT DISTINCT
 				c.name 'Column Name',
 				t.Name 'Data type',
 				c.max_length 'Max Length',
@@ -148,9 +230,9 @@ namespace Database.Lib.DBMS
 			LEFT OUTER JOIN 
 				sys.indexes i ON ic.object_id = i.object_id AND ic.index_id = i.index_id
 			WHERE
-				c.object_id = OBJECT_ID('{0}')";
+				c.object_id = OBJECT_ID('{schema}.{tableName}')";
 
-			return ExecuteDataSet(string.Format(script, tableName));
+			return ExecuteDataSet(script);
 		}
 
 		public IList<string> SearchColumn(string columnName)

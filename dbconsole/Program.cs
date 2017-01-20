@@ -1,4 +1,4 @@
-﻿using Database.Lib.Handlers;
+﻿using Database.Lib.DataProviders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ namespace dbconsole
 	{
 		static void Main(string[] args)
 		{
-			using(var conn = new MSSQLHandler(".", "FairCredit"))
+			using(var conn = new MSSQL(".", "FairCredit"))
 			{
 				foreach (string table in conn.GetTables().OrderBy(o => o).ToList())
 					WriteLine(table);

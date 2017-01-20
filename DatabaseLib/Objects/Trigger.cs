@@ -1,4 +1,4 @@
-﻿using Database.Lib.DBMS;
+﻿using Database.Lib.DataProviders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Database.Lib.Data
 {
-	public class StoredProcedure<T> : DbObject<T>, IDbObject<T> where T : class, IDB<T>, new()
+	public class Trigger<T> : DbObject<T>, IDbObject<T> where T : class, IDB<T>, new()
 	{
 		private string _script = null;
 		public string Script
@@ -22,10 +22,9 @@ namespace Database.Lib.Data
 			private set { _script = value; }
 		}
 
-
-		public StoredProcedure(string name, T db) : base(name)
+		public Trigger(string schema, string name, T db) : base(schema, name)
 		{
-			DB = db;
+			Load(db);
 		}
 
 		public bool Load(T db)

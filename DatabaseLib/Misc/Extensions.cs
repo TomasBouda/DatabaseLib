@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10,73 +11,6 @@ namespace Database.Lib.Misc
 {
 	public static class Extensions
 	{
-		public static string ToStringSingle(this DataTable dataTable)
-		{
-			StringBuilder output = new StringBuilder();
-			foreach (DataRow row in dataTable.Rows)
-			{
-				for (int i = 0; i < dataTable.Columns.Count; i++)
-				{
-					var text = row[i].ToString();
-					output.AppendLine(text);
-				}
-			}
-			return output.ToString();
-		}
-
-		public static string ToFormatedString(this DataTable dataTable)
-		{
-			StringBuilder output = new StringBuilder();
-
-			var columnsWidths = new int[dataTable.Columns.Count];
-
-			// Get column widths
-			foreach (DataRow row in dataTable.Rows)
-			{
-				for (int i = 0; i < dataTable.Columns.Count; i++)
-				{
-					var length = row[i].ToString().Length;
-					if (columnsWidths[i] < length)
-						columnsWidths[i] = length;
-				}
-			}
-
-			// Get Column Titles
-			for (int i = 0; i < dataTable.Columns.Count; i++)
-			{
-				var length = dataTable.Columns[i].ColumnName.Length;
-				if (columnsWidths[i] < length)
-					columnsWidths[i] = length;
-			}
-
-			// Write Column titles
-			for (int i = 0; i < dataTable.Columns.Count; i++)
-			{
-				var text = dataTable.Columns[i].ColumnName;
-				output.Append("|" + PadCenter(text, columnsWidths[i] + 2));
-			}
-			output.Append("|\n" + new string('=', output.Length) + "\n");
-
-			// Write Rows
-			foreach (DataRow row in dataTable.Rows)
-			{
-				for (int i = 0; i < dataTable.Columns.Count; i++)
-				{
-					var text = row[i].ToString();
-					output.Append("|" + PadCenter(text, columnsWidths[i] + 2));
-				}
-				output.Append("|\n");
-			}
-			return output.ToString();
-		}
-
-		private static string PadCenter(string text, int maxLength)
-		{
-			int diff = maxLength - text.Length;
-			return new string(' ', diff / 2) + text + new string(' ', (int)(diff / 2.0 + 0.5));
-
-		}
-
 		/// <summary>
 		/// Classic "SQL" Like function
 		/// </summary>
@@ -126,6 +60,19 @@ namespace Database.Lib.Misc
 			{
 				throw new ArgumentNullException(name);
 			}
+		}
+
+		public static IList<string> ColToList(this DataSet dataSet, string columnName)
+		{
+			return dataSet.Tables[0].AsEnumerable().Select(dataRow => dataRow.Field<string>(columnName)).ToList();
+		}
+
+		public static SqlCommand AddParam(this SqlCommand cmd, string paramName, string value, SqlDbType type, int size) // TODO
+		{
+			var param = cmd.Parameters.Add(paramName, type, size);
+			param.Value = value;
+
+			return cmd;
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿using Database.Lib.DBMS;
+﻿using Database.Lib.DataProviders;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -23,16 +23,28 @@ namespace Database.Lib.Data
 			private set { _columns = value; }
 		}
 
-		public Table(string name, T db) : base(name)
+		public IEnumerable<Trigger<T>> Triggers { get; set; }
+
+		public Table(string schema, string name, T db) : base(schema, name)
 		{
 			DB = db;
+		}
+
+		public Table(string schema, string name, T db, bool triggers) : this(schema, name, db)
+		{
+			if(triggers)
+				Triggers = db.GetTriggers(Name)?.Select(t => new Trigger<T>(schema, t, db));	// TODO takhle ne!!!
 		}
 
 		public bool Load(T db)
 		{
 			try
 			{
-				Columns = db.GetColumnsInfo(Name);
+				Columns = db.GetColumnsInfo(Schema, Name);
+				foreach(var trigger in Triggers)
+				{
+					trigger.Load(db);
+				}
 				IsLoaded = true;
 			}
 			catch

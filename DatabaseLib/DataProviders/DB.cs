@@ -6,15 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Database.Lib.DBMS
+namespace Database.Lib.DataProviders
 {
 	public abstract class DB : IDisposable
 	{
 		protected DB() { }
 
-		public IDbConnection Connection { get; set; }
+		public IDbConnection Connection { get; protected set; }
 
-		public IDbTransaction Transaction { get; set; }
+		public IDbTransaction Transaction { get; protected set; }
 
 		public virtual bool IsConnected
 		{
@@ -30,7 +30,7 @@ namespace Database.Lib.DBMS
 		/// <param name="connectionString"></param>
 		/// <param name="conn"></param>
 		/// <returns></returns>
-		public bool Connect<TConncetion, TException>(string connectionString, Func<string, TConncetion> conn) 
+		public void Connect<TConncetion, TException>(string connectionString, Func<string, TConncetion> conn) 
 			where TConncetion : IDbConnection, new()
 			where TException : DbException
 		{
@@ -39,18 +39,32 @@ namespace Database.Lib.DBMS
 			try
 			{
 				Connection.Open();
-				return true;
 			}
 			catch (TException ex)	// TODO
 			{
 				Console.WriteLine(ex.Message);
-				return false;
+				throw;
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex.Message);
-				return false;
+				throw;
 			}
+		}
+
+		public void BeginTransaction()
+		{
+			Transaction = Connection?.BeginTransaction();
+		}
+
+		public void CommitTransaction()
+		{
+			Transaction.Commit();
+		}
+
+		public void RollBackTransaction()
+		{
+			Transaction.Rollback();
 		}
 
 		public bool Disconnect()
@@ -73,16 +87,17 @@ namespace Database.Lib.DBMS
 				Connection = null;
 		}
 
-		protected virtual IList<string> GetCollection<TConnection>(string collectionName, string[] restrictions = null) where TConnection : DbConnection
+		protected virtual IList<Tuple<string,string>> GetCollection<TConnection>(string collectionName, string[] restrictions = null) where TConnection : DbConnection
 		{
-			List<string> tables = new List<string>();
+			List<Tuple<string, string>> objects = new List<Tuple<string, string>>();
 			DataTable dt = ((TConnection)Connection).GetSchema(collectionName, restrictions);
 			foreach (DataRow row in dt.Rows)
 			{
-				string tablename = (string)row[2];
-				tables.Add(tablename);
+				string objectSchema = (string)row[1];
+				string objectName = (string)row[2];
+				objects.Add(new Tuple<string, string>(objectSchema, objectName));
 			}
-			return tables;
+			return objects;
 		}
 	}
 }

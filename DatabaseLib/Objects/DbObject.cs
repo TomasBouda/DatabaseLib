@@ -1,4 +1,4 @@
-﻿using Database.Lib.DBMS;
+﻿using Database.Lib.DataProviders;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,20 +13,23 @@ namespace Database.Lib.Data
 	{
 		protected T DB { get; set; }
 
+		public string Schema { get; set; }
+
 		public string Name { get; set; }
 
 		public bool IsLoaded { get; set; }
 
 		public DbObject() { }
 
-		public DbObject(string name)
+		public DbObject(string schema, string name)
 		{
+			Schema = schema;
 			Name = name;
 		}
 
 		public override string ToString()
 		{
-			return Name;
+			return Schema + "." + Name;
 		}
 	}
 }

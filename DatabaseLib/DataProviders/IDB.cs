@@ -1,5 +1,7 @@
 ﻿using Database.Lib.Data;
-using Database.Lib.DBMS;
+using Database.Lib.DataProviders;
+using Database.Lib.DataProviders.ConnectionParams;
+using Database.Lib.Search;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,17 +11,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Database.Lib.DBMS
+namespace Database.Lib.DataProviders
 {
     public interface IDB<T> : IDisposable where T : class, IDB<T>, new()
 	{
 		bool IsConnected { get; }
 		IDbConnection Connection { get; }
-		IDbTransaction Transaction { get; set; }
+		IDbTransaction Transaction { get; }
 
-		bool Connect(string server, string database, string user = null, string password = null);
+		void Connect(string connectionString);
 
-		bool Connect(string connectionString);
+		void Connect<TConn>(TConn @params) where TConn : IConnectionParams<T>;
 
 		bool Disconnect();
 
@@ -33,17 +35,19 @@ namespace Database.Lib.DBMS
 
 		int GetNumberOfRows(string table);
 
-		IList<string> GetTables();
+		IList<Tuple<string, string>> GetTables();
 
-		IList<string> GetViews();
+		IList<Tuple<string, string>> GetViews();
 
-		IList<string> GetStoredProcedures();
+		IList<Tuple<string, string>> GetStoredProcedures();
+
+		IList<string> GetTriggers(string tableName);
 
 		IList<IDbObject<T>> GetObjects(EDbObjects including = EDbObjects.All);
 
 		string GetScriptFor(string objectName);
 
-		DataSet GetColumnsInfo(string tableName);
+		DataSet GetColumnsInfo(string schema, string tableName);
 
 		IList<string> SearchColumn(string columnName);
 
