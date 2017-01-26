@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Database.Lib.Data
 {
 
-	public abstract class DbObject<T> where T : class, IDB<T>, new()
+	public abstract class DbObject<T> where T : class, IDB, new()
 	{
 		protected T DB { get; set; }
 

@@ -7,7 +7,12 @@ using System.Threading.Tasks;
 
 namespace Database.Lib.Data
 {
-	public class View<T> : DbObject<T>, IDbObject<T> where T : class, IDB<T>, new()
+	public interface IView : IDbObject
+	{
+		string Script { get; }
+	}
+
+	public class View<T> : DbObject<T>, IView, IDbObject where T : class, IDB, new()
 	{
 		private string _script = null;
 		public string Script

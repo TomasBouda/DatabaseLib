@@ -32,13 +32,32 @@ namespace Database.Lib.Search
 	}
 
 
-	public class DatabaseManager<T> : IDisposable
-		where T : class, IDB<T>, new()
+	public class DatabaseManager<T> : IDatabaseManager, IDisposable
+		where T : class, IDB, new()
 	{
-		public T DB { get; set; }
-		private IList<IDbObject<T>> AllObjects { get; set; }
+		private T DB { get; set; }
+
+		public string Name { get; set; }
+
+		public bool IsConnected
+		{
+			get
+			{
+				return DB.IsConnected;
+			}
+		}
+
+		public string ConnectionString
+		{
+			get
+			{
+				return DB.Connection.ConnectionString;
+			}
+		}
+
+		private IList<IDbObject> AllObjects { get; set; }
 		private DataSet Triggers { get; set; }
-		public SearchResults<T> Results { get; set; }
+		public SearchResults Results { get; set; }
 
 		public string SearchQuery { get; set; }
 
@@ -47,12 +66,17 @@ namespace Database.Lib.Search
 			DB = new T();
 		}
 
+		public DatabaseManager(string name) : this()
+		{
+			Name = name;
+		}
+
 		public ConnectionResult Connect(string connectionString)
 		{
 			return Connect(() => DB.Connect(connectionString));
 		}
 
-		public ConnectionResult Connect(IConnectionParams<T> connParams)
+		public ConnectionResult Connect(IConnectionParams connParams)
 		{
 			return Connect(() => DB.Connect(connParams));
 		}
@@ -75,9 +99,9 @@ namespace Database.Lib.Search
 			}
 		}
 
-		public SearchResults<T> SearchInDb(string query = "", EDbObjects searchIn = EDbObjects.All, Sort sort = Sort.asc)
+		public SearchResults SearchInDb(string query = "", EDbObjects searchIn = EDbObjects.All, Sort sort = Sort.asc)
 		{
-			Results = new SearchResults<T>();
+			Results = new SearchResults();
 
 			if (DB == null || !DB.IsConnected)
 			{
@@ -123,6 +147,41 @@ namespace Database.Lib.Search
 			}
 
 			return Results;
+		}
+
+		public IDbObject IDbObject(object dbObject)
+		{
+			return dbObject as IDbObject;
+		}
+
+		public bool IsTable(IDbObject dbObject)
+		{
+			return dbObject is Table<T>;
+		}
+
+		public bool IsView(IDbObject dbObject)
+		{
+			return dbObject is View<T>;
+		}
+
+		public bool IsStoredProcedure(IDbObject dbObject)
+		{
+			return dbObject is StoredProcedure<T>;
+		}
+
+		public ITable Table(IDbObject dbObject)
+		{
+			return (Table<T>)dbObject;
+		}
+
+		public IView View(IDbObject dbObject)
+		{
+			return (View<T>)dbObject;
+		}
+
+		public IStoredProcedure StoredProcedure(IDbObject dbObject)
+		{
+			return (StoredProcedure<T>)dbObject;
 		}
 
 		public void ClearCache()

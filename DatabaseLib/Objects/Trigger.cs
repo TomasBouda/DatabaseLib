@@ -7,7 +7,12 @@ using System.Threading.Tasks;
 
 namespace Database.Lib.Data
 {
-	public class Trigger<T> : DbObject<T>, IDbObject<T> where T : class, IDB<T>, new()
+	public interface ITrigger : IDbObject
+	{
+		string Script { get; }
+	}
+
+	public class Trigger<T> : DbObject<T>, ITrigger, IDbObject where T : class, IDB, new()
 	{
 		private string _script = null;
 		public string Script

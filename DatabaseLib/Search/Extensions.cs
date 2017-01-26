@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace Database.Lib.Search
 {
-	public class SearchResults
+	public static class Extensions
 	{
-		public IList<IDbObject> FoundDbObjects { get; set; }
-		public bool Error { get; set; }
-		public string ErrorMessage { get; set; }
+		
 	}
 }

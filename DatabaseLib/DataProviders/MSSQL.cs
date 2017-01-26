@@ -13,7 +13,7 @@ using Database.Lib.Search;
 
 namespace Database.Lib.DataProviders
 {
-	public class MSSQL : DB, IDB<MSSQL>
+	public class MSSQL : DB, IDB
 	{ 
 		public MSSQL() { }
 
@@ -30,8 +30,10 @@ namespace Database.Lib.DataProviders
 			Connect(connectionString);			
 		}
 
-		public void Connect<TConn>(TConn @params) where TConn : IConnectionParams<MSSQL>
+		public void Connect<TConn>(TConn @params) where TConn : IConnectionParams
 		{
+			if (!(@params is MSSQLConnectionParams)) throw new Exception($"Wrong type of connection paremeters. Please provide {nameof(MSSQL)} connection parameters.");
+
 			var connParams = @params as MSSQLConnectionParams;
 
 			Connect(connParams.Server, connParams.Database, connParams.Username, connParams.Password, connParams.IntegratedSecurity);
@@ -177,9 +179,9 @@ namespace Database.Lib.DataProviders
 			return dataSet.ColToList("trigger_name");
 		}
 
-		public IList<IDbObject<MSSQL>> GetObjects(EDbObjects including = EDbObjects.All)
+		public IList<IDbObject> GetObjects(EDbObjects including = EDbObjects.All)
 		{
-			var allObjects = new List<IDbObject<MSSQL>>();
+			var allObjects = new List<IDbObject>();
 
 			if((including & (EDbObjects.Tables | EDbObjects.Columns)) != 0)
 				allObjects.AddRange(GetTables().Select(x => new Table<MSSQL>(x.Item1, x.Item2, this)));

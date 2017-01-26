@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Database.Lib.DataProviders.ConnectionParams
 {
-	public interface IConnectionParams<T> where T : class, IDB<T>, new()
+	public interface IConnectionParams
 	{
-
+		string Server { get; set; }
+		string Database { get; set; }
 	}
 }

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Database.Lib.DataProviders
 {
-    public interface IDB<T> : IDisposable where T : class, IDB<T>, new()
+    public interface IDB : IDisposable
 	{
 		bool IsConnected { get; }
 		IDbConnection Connection { get; }
@@ -21,7 +21,7 @@ namespace Database.Lib.DataProviders
 
 		void Connect(string connectionString);
 
-		void Connect<TConn>(TConn @params) where TConn : IConnectionParams<T>;
+		void Connect<TConn>(TConn @params) where TConn : IConnectionParams;
 
 		bool Disconnect();
 
@@ -43,7 +43,7 @@ namespace Database.Lib.DataProviders
 
 		IList<string> GetTriggers(string tableName);
 
-		IList<IDbObject<T>> GetObjects(EDbObjects including = EDbObjects.All);
+		IList<IDbObject> GetObjects(EDbObjects including = EDbObjects.All);
 
 		string GetScriptFor(string objectName);
 

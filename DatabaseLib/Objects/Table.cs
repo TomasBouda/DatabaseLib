@@ -2,13 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Database.Lib.Data
 {
-	public class Table<T> : DbObject<T>, IDbObject<T> where T : class, IDB<T>, new()
+	public interface ITable : IDbObject
+	{
+		DataSet Columns { get; }
+	}
+
+	public class Table<T> : DbObject<T>, ITable, IDbObject where T : class, IDB, new()
 	{
 		private DataSet _columns;
 		public DataSet Columns
@@ -47,8 +53,9 @@ namespace Database.Lib.Data
 				}
 				IsLoaded = true;
 			}
-			catch
+			catch(Exception ex)
 			{
+				Debug.WriteLine(ex.Message);
 				IsLoaded = false;
 			}
 

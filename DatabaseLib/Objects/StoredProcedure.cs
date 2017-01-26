@@ -7,7 +7,12 @@ using System.Threading.Tasks;
 
 namespace Database.Lib.Data
 {
-	public class StoredProcedure<T> : DbObject<T>, IDbObject<T> where T : class, IDB<T>, new()
+	public interface IStoredProcedure : IDbObject
+	{
+		string Script { get; }
+	}
+
+	public class StoredProcedure<T> : DbObject<T>, IStoredProcedure, IDbObject where T : class, IDB, new()
 	{
 		private string _script = null;
 		public string Script

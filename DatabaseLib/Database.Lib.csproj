@@ -52,6 +52,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataProviders\ConnectionParams\MySqlConnectionParams.cs" />
+    <Compile Include="DataProviders\MySql.cs" />
     <Compile Include="Search\ConnectionResult.cs" />
     <Compile Include="DataProviders\ConnectionParams\IConnectionParams.cs" />
     <Compile Include="DataProviders\ConnectionParams\MSSQLConnectionParams.cs" />
@@ -70,6 +72,9 @@
     <Compile Include="DataProviders\MSSQL.cs" />
     <Compile Include="Search\DatabaseManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Search\DataProvider.cs" />
+    <Compile Include="Search\Extensions.cs" />
+    <Compile Include="Search\IDatabaseManager.cs" />
     <Compile Include="Search\SearchResults.cs" />
   </ItemGroup>
   <ItemGroup>
