@@ -62,9 +62,9 @@ namespace Database.Lib.Misc
 			}
 		}
 
-		public static IList<string> ColToList(this DataSet dataSet, string columnName)
+		public static IList<string> ColumnToList(this DataSet dataSet, string columnName)
 		{
-			return dataSet.Tables[0].AsEnumerable().Select(dataRow => dataRow.Field<string>(columnName)).ToList();
+			return dataSet.Tables[0]?.AsEnumerable().Select(dataRow => dataRow.Field<string>(columnName)).ToList();
 		}
 
 		public static SqlCommand AddParam(this SqlCommand cmd, string paramName, string value, SqlDbType type, int size) // TODO

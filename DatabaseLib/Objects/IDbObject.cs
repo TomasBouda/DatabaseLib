@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Database.Lib.Data
 {
-	public interface IDbObject/*<T> where T : class, IDB<T>, new()*/
+	public interface IDbObject
 	{
-		string Name { get; set; }
+		string Name { get; }
 
-		//bool Load(T db);
+		string Script { get; }
 	}
 }

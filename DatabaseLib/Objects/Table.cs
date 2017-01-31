@@ -31,10 +31,8 @@ namespace Database.Lib.Data
 
 		public IEnumerable<Trigger<T>> Triggers { get; set; }
 
-		public Table(string schema, string name, T db) : base(schema, name)
-		{
-			DB = db;
-		}
+		public Table(string schema, string name, T db) 
+			: base(schema, name, db, () => db.GetScriptFor(name, EDbObjects.Tables)) { }
 
 		public Table(string schema, string name, T db, bool triggers) : this(schema, name, db)
 		{
@@ -42,15 +40,16 @@ namespace Database.Lib.Data
 				Triggers = db.GetTriggers(Name)?.Select(t => new Trigger<T>(schema, t, db));	// TODO takhle ne!!!
 		}
 
-		public bool Load(T db)
+		public override bool Load(T db)
 		{
 			try
 			{
 				Columns = db.GetColumnsInfo(Schema, Name);
-				foreach(var trigger in Triggers)
-				{
-					trigger.Load(db);
-				}
+				Script = GetScript();
+				//foreach(var trigger in Triggers)
+				//{
+				//	trigger.Load(db);
+				//}
 				IsLoaded = true;
 			}
 			catch(Exception ex)
@@ -60,6 +59,11 @@ namespace Database.Lib.Data
 			}
 
 			return IsLoaded;
+		}
+
+		public DataSet Select()
+		{
+			return DB.ExecuteDataSet($"SELECT * FROM {Schema}.{Name}");
 		}
 	}
 }

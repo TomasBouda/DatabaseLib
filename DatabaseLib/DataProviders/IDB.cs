@@ -45,7 +45,7 @@ namespace Database.Lib.DataProviders
 
 		IList<IDbObject> GetObjects(EDbObjects including = EDbObjects.All);
 
-		string GetScriptFor(string objectName);
+		string GetScriptFor(string objectName, EDbObjects objType = EDbObjects.None);
 
 		DataSet GetColumnsInfo(string schema, string tableName);
 

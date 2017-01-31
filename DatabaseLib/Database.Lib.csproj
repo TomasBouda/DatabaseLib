@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataProviders\ConnectionParams\MySqlConnectionParams.cs" />
+    <Compile Include="DataProviders\Flags.cs" />
     <Compile Include="DataProviders\MySql.cs" />
     <Compile Include="Search\ConnectionResult.cs" />
     <Compile Include="DataProviders\ConnectionParams\IConnectionParams.cs" />

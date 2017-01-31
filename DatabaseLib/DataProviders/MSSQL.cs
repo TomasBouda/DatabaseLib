@@ -151,7 +151,7 @@ namespace Database.Lib.DataProviders
 
 		public IList<string> GetTriggers(string tableName)
 		{
-			string script = @"SELECT
+			string script = $@"SELECT
 				sysobjects.name AS trigger_name 
 				,USER_NAME(sysobjects.uid) AS trigger_owner 
 				,s.name AS table_schema 
@@ -162,21 +162,17 @@ namespace Database.Lib.DataProviders
 				,OBJECTPROPERTY( id, 'ExecIsAfterTrigger') AS isafter 
 				,OBJECTPROPERTY( id, 'ExecIsInsteadOfTrigger') AS isinsteadof 
 				,OBJECTPROPERTY(id, 'ExecIsTriggerDisabled') AS [disabled] 
-			FROM sysobjects 
-
+			FROM sysobjects
 			INNER JOIN sysusers 
-				ON sysobjects.uid = sysusers.uid 
-
+				ON sysobjects.uid = sysusers.uid
 			INNER JOIN sys.tables t 
-				ON sysobjects.parent_obj = t.object_id 
-
+				ON sysobjects.parent_obj = t.object_id
 			INNER JOIN sys.schemas s 
-				ON t.schema_id = s.schema_id 
+				ON t.schema_id = s.schema_id
+			WHERE sysobjects.type = 'TR' and OBJECT_NAME(parent_obj) = '{tableName}'";
 
-			WHERE sysobjects.type = 'TR' and OBJECT_NAME(parent_obj) = '{0}'";
-
-			var dataSet = ExecuteDataSet(string.Format(script, tableName));
-			return dataSet.ColToList("trigger_name");
+			var dataSet = ExecuteDataSet(script);
+			return dataSet.ColumnToList("trigger_name");
 		}
 
 		public IList<IDbObject> GetObjects(EDbObjects including = EDbObjects.All)
@@ -195,7 +191,7 @@ namespace Database.Lib.DataProviders
 			return allObjects;
 		}
 
-		public string GetScriptFor(string objectName)
+		public string GetScriptFor(string objectName, EDbObjects objType = EDbObjects.None)
 		{
 			using(SqlCommand sqlCommand = new SqlCommand("sys.sp_helptext", (SqlConnection)Connection))
 			{
@@ -215,7 +211,8 @@ namespace Database.Lib.DataProviders
 
 		public DataSet GetColumnsInfo(string schema, string tableName)
 		{
-			string script = $@"SELECT DISTINCT
+			string script = 
+			$@"SELECT DISTINCT
 				c.name 'Column Name',
 				t.Name 'Data type',
 				c.max_length 'Max Length',
@@ -239,28 +236,30 @@ namespace Database.Lib.DataProviders
 
 		public IList<string> SearchColumn(string columnName)
 		{
-			string script = @"SELECT c.name AS ColName, t.name AS TableName
+			string script = 
+				$@"SELECT c.name AS ColName, t.name AS TableName
 				FROM sys.columns c
 					JOIN sys.tables t ON c.object_id = t.object_id
-				WHERE c.name LIKE '%{0}%'";
+				WHERE c.name LIKE '%{columnName}%'";// TODO wildcards
 
-			var dataSet = ExecuteDataSet(string.Format(script, columnName));
-			return dataSet.Tables[0].AsEnumerable().Select(dataRow => dataRow.Field<string>("TableName")).ToList();
+			var dataSet = ExecuteDataSet(script);
+			return dataSet.ColumnToList("TableName");
 		}
 
 		public IList<string> SearchInScripts(string query)
 		{
-			string script = @"SELECT DISTINCT
+			string script = 
+			$@"SELECT DISTINCT
 				   o.name AS Object_Name,
 				   o.type_desc
 			  FROM sys.sql_modules m
 				   INNER JOIN
 				   sys.objects o
 					 ON m.object_id = o.object_id
-			 WHERE m.definition Like '%{0}%';";
+			 WHERE m.definition Like '%{query}%';";
 
-			var dataSet = ExecuteDataSet(string.Format(script, query));
-			return dataSet.Tables[0].AsEnumerable().Select(dataRow => dataRow.Field<string>("Object_Name")).ToList();
+			var dataSet = ExecuteDataSet(script);
+			return dataSet.ColumnToList("Object_Name");
 		}
 	}
 }

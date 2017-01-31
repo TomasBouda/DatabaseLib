@@ -14,6 +14,10 @@ namespace Database.Lib.DataProviders
 {
 	public class MySql : DB, IDB // TODO
 	{
+		private const string GetScriptForTableColumn = "Create Table";
+		private const string GetScriptForViewolumn = "Create View";
+		private const string GetScriptForStoredProcedureColumn = "Create Procedure";
+
 		public void Connect(string server, string database, string user = null, string password = null)
 		{
 			string connectionString = $"Server={server};Database={database};Uid={user};Pwd ={password};";
@@ -59,12 +63,14 @@ namespace Database.Lib.DataProviders
 
 		public IDataReader ExecuteReader(string query)
 		{
-			throw new NotImplementedException();
+			using (var cmd = new MySqlCommand(query, (MySqlConnection)Connection))
+				return cmd.ExecuteReader();
 		}
 
 		public string ExecuteScalar(string query)
 		{
-			throw new NotImplementedException();
+			using (var cmd = new MySqlCommand(query, (MySqlConnection)Connection))
+				return cmd.ExecuteScalar()?.ToString();
 		}
 
 		public DataSet GetColumnsInfo(string schema, string tableName)
@@ -95,12 +101,32 @@ namespace Database.Lib.DataProviders
 			return allObjects;
 		}
 
-		public string GetScriptFor(string objectName)
+		public string GetScriptFor(string objectName, EDbObjects objType)
 		{
-			string script = $"show create procedure {objectName}";
+			string script;
+			switch (objType)
+			{
+				case EDbObjects.Tables:
+				{
+					script = $"show create table {objectName}";
+					var ds = ExecuteDataSet(script);
+					return ds.Tables[0]?.Rows[0]?.Field<string>(GetScriptForTableColumn);
+				}
+				case EDbObjects.Views:
+				{
+					script = $"show create view {objectName}";
+					var ds = ExecuteDataSet(script);
+					return ds.Tables[0]?.Rows[0]?.Field<string>(GetScriptForViewolumn);
+					}
+				case EDbObjects.StoredProcedures:
+				{
+					script = $"show create procedure {objectName}";
+					var ds = ExecuteDataSet(script);
+					return ds.Tables[0]?.Rows[0]?.Field<string>(GetScriptForStoredProcedureColumn);
+					}
 
-			var a = ExecuteDataSet(script);
-			return "";
+				default: return "";
+			}
 		}
 
 		public IList<Tuple<string, string>> GetStoredProcedures()

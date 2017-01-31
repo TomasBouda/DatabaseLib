@@ -30,7 +30,7 @@ namespace Database.Lib.DataProviders
 		/// <param name="connectionString"></param>
 		/// <param name="conn"></param>
 		/// <returns></returns>
-		public void Connect<TConncetion, TException>(string connectionString, Func<string, TConncetion> conn) 
+		protected void Connect<TConncetion, TException>(string connectionString, Func<string, TConncetion> conn) 
 			where TConncetion : IDbConnection, new()
 			where TException : DbException
 		{
