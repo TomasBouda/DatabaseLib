@@ -12,6 +12,7 @@ namespace Database.Lib.Data
 	public interface ITable : IDbObject
 	{
 		DataSet Columns { get; }
+		DataSet Select(string where = null);
 	}
 
 	public class Table<T> : DbObject<T>, ITable, IDbObject where T : class, IDB, new()
@@ -61,9 +62,11 @@ namespace Database.Lib.Data
 			return IsLoaded;
 		}
 
-		public DataSet Select()
+		public DataSet Select(string where = null)
 		{
-			return DB.ExecuteDataSet($"SELECT * FROM {Schema}.{Name}");
+			where = where != null ? "WHERE " + where : "";
+
+			return DB.ExecuteDataSet($"SELECT * FROM {Schema}.{Name} {where}");
 		}
 	}
 }

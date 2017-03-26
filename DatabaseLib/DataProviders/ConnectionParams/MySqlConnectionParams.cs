@@ -6,16 +6,6 @@ using System.Threading.Tasks;
 
 namespace Database.Lib.DataProviders.ConnectionParams
 {
-	public enum EIntegratedSecurity
-	{
-		@true,
-		@false
-		//yes = @true,
-		//no = @false,
-		//sspi = @true
-	}
-
-
 	public class MSSQLConnectionParams : IConnectionParams
 	{
 		public string Server { get; set; }
@@ -32,11 +22,11 @@ namespace Database.Lib.DataProviders.ConnectionParams
 			}
 		}
 
-		public EIntegratedSecurity SetIntegratedSecurity
+		public bool SetIntegratedSecurity
 		{
 			set
 			{
-				if (value == EIntegratedSecurity.@true)
+				if (value)
 					_integratedSecurity = "true";
 				else
 					_integratedSecurity = "false";

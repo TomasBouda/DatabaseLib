@@ -20,14 +20,22 @@ namespace Database.Lib.Search
 			DatabaseManagers = new List<IDatabaseManager>();
 		}
 
-		public void SetActiveManager(string managerName)
+		public IDatabaseManager SetActiveManager(string managerName)
 		{
-			ActiveManager = DatabaseManagers.SingleOrDefault(m => m.Name == managerName);
+			return ActiveManager = DatabaseManagers.SingleOrDefault(m => m.Name == managerName);
 		}
 
 		public void AddManager(IDatabaseManager manager)
 		{
-			DatabaseManagers.Add(manager);
+			if (!DatabaseManagers.Any(m => m.Name == manager.Name))
+				DatabaseManagers.Add(manager);
+			else
+			{
+				//throw new Exception("Database manager name must be unique");
+				var mgr = DatabaseManagers.Single(m => m.Name == manager.Name);
+				mgr = manager;
+				Console.WriteLine("Manager replaced."); //TODO
+			}	
 		}
 		
 		public void AddMssqlManager(string managerName, string server, string database, string username = null, string password = null)
@@ -37,12 +45,15 @@ namespace Database.Lib.Search
 			AddManager(manager);
 		}
 
-		public ConnectionResult AddMSSqlManager(string managerName, MSSQLConnectionParams connParams)
+		public ConnectionResult AddMSSqlManager(string managerName, MSSQLConnectionParams connParams, bool setActive = false)
 		{
 			DatabaseManager<MSSQL> manager = new DatabaseManager<MSSQL>(managerName);
 			var connResult = manager.Connect(connParams);
-			if(connResult.Success)
+			if (connResult.Success)
+			{
 				AddManager(manager);
+				SetActiveManager(managerName);
+			}
 
 			return connResult;
 		}

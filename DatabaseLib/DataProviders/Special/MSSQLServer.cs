@@ -55,6 +55,11 @@ namespace Database.Lib.DataProviders.Special
 			}
 		}
 
+		public int ExecuteNonQuery(string sqlCommand)
+		{
+			return ServerConnection.ExecuteNonQuery(sqlCommand);
+		}
+
 		public SqlCommand CreateCommand()
 		{
 			return Server.ConnectionContext.SqlConnectionObject.CreateCommand();

@@ -52,5 +52,7 @@ namespace Database.Lib.DataProviders
 		IList<string> SearchColumn(string columnName);
 
 		IList<string> SearchInScripts(string query);
+
+		IDbCommand CreateCommand(string query, CommandType type = CommandType.Text);
 	}
 }

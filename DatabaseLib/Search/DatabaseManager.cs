@@ -41,6 +41,14 @@ namespace Database.Lib.Search
 			}
 		}
 
+		public IDbConnection Connection
+		{
+			get
+			{
+				return DB.Connection;
+			}
+		}
+
 		private IList<IDbObject> AllObjects { get; set; }
 		private DataSet Triggers { get; set; }
 		public SearchResults Results { get; set; }
@@ -180,6 +188,31 @@ namespace Database.Lib.Search
 		{
 			ClearCache();
 			DB.Dispose();
+		}
+
+		public DataSet ExecuteDataSet(string query)
+		{
+			return DB.ExecuteDataSet(query);
+		}
+
+		public IDataReader ExecuteReader(string query)
+		{
+			return DB.ExecuteReader(query);
+		}
+
+		public int Execute(string query)
+		{
+			return DB.Execute(query);
+		}
+
+		public string ExecuteScalar(string query)
+		{
+			return DB.ExecuteScalar(query);
+		}
+
+		public IDbCommand CreateCommand(string query, CommandType type = CommandType.Text)
+		{
+			return DB.CreateCommand(query, type);
 		}
 	}
 }

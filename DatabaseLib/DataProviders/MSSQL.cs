@@ -107,7 +107,7 @@ namespace Database.Lib.DataProviders
 			}
 		}
 
-		public SqlCommand CreateCommand(string query, CommandType type = CommandType.Text) // TODO
+		public IDbCommand CreateCommand(string query, CommandType type = CommandType.Text) // TODO
 		{
 			var cmd = new SqlCommand(query, (SqlConnection)Connection);
 			cmd.CommandType = type;

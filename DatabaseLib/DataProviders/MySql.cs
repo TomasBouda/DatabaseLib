@@ -158,5 +158,10 @@ namespace Database.Lib.DataProviders
 		{
 			throw new NotImplementedException();
 		}
+
+		public IDbCommand CreateCommand(string query, CommandType type = CommandType.Text)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
