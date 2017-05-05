@@ -1,4 +1,4 @@
-﻿using Database.Lib.DataProviders;
+﻿using TomLabs.OpenSource.SQuirreL.DataProviders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +14,8 @@ namespace dbconsole
 		{
 			using(var conn = new MSSQL(".", "FairCredit"))
 			{
-				foreach (string table in conn.GetTables().OrderBy(o => o).ToList())
-					WriteLine(table);
+				foreach (Tuple<string, string> table in conn.GetTables().OrderBy(o => o).ToList())
+					WriteLine($"{table.Item1}.{table.Item2}");
 			}
 
 			ReadLine();

@@ -50,9 +50,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DatabaseLib\Database.Lib.csproj">
+    <ProjectReference Include="..\SQuirreL\SQuirreL.csproj">
       <Project>{27A17655-B321-4A86-86B2-2B3F2C75BBA6}</Project>
-      <Name>Database.Lib</Name>
+      <Name>SQuirreL</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
