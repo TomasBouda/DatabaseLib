@@ -1,2 +1,2 @@
-# DatabaseLib
-Simple library for direct access into DB.
+# SQuirreL
+Simple C# library for direct access into MSSQL or MySQL DB.
