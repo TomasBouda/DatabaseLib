@@ -1,10 +1,8 @@
-﻿using TomLabs.OpenSource.SQuirreL.DataProviders;
-using TomLabs.OpenSource.SQuirreL.DataProviders.ConnectionParams;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using TomLabs.OpenSource.SQuirreL.DataProviders;
+using TomLabs.OpenSource.SQuirreL.DataProviders.ConnectionParams;
 
 namespace TomLabs.OpenSource.SQuirreL.Search
 {
@@ -35,13 +33,20 @@ namespace TomLabs.OpenSource.SQuirreL.Search
 				var mgr = DatabaseManagers.Single(m => m.Name == manager.Name);
 				mgr = manager;
 				Console.WriteLine("Manager replaced."); //TODO
-			}	
+			}
 		}
-		
+
 		public void AddMssqlManager(string managerName, string server, string database, string username = null, string password = null)
 		{
 			DatabaseManager<MSSQL> manager = new DatabaseManager<MSSQL>(managerName);
-			manager.Connect(new MSSQLConnectionParams() { Server = server, Database = database, Username = username, Password = password });
+			manager.Connect(new MSSQLConnectionParams() { Server = server, Database = database, Username = username, Password = password, SetIntegratedSecurity = true/* TODO */ });
+			AddManager(manager);
+		}
+
+		public void AddMssqlManager(string managerName, string connectionString)
+		{
+			DatabaseManager<MSSQL> manager = new DatabaseManager<MSSQL>(managerName);
+			manager.Connect(connectionString);
 			AddManager(manager);
 		}
 

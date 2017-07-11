@@ -1,11 +1,8 @@
-﻿using TomLabs.OpenSource.SQuirreL.DataProviders;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using TomLabs.OpenSource.SQuirreL.DataProviders;
 
 namespace TomLabs.OpenSource.SQuirreL.Data
 {
@@ -32,13 +29,12 @@ namespace TomLabs.OpenSource.SQuirreL.Data
 
 		public IEnumerable<Trigger<T>> Triggers { get; set; }
 
-		public Table(string schema, string name, T db) 
+		public Table(string schema, string name, T db)
 			: base(schema, name, db, () => db.GetScriptFor(name, EDbObjects.Tables)) { }
 
 		public Table(string schema, string name, T db, bool triggers) : this(schema, name, db)
 		{
-			if(triggers)
-				Triggers = db.GetTriggers(Name)?.Select(t => new Trigger<T>(schema, t, db));	// TODO takhle ne!!!
+
 		}
 
 		public override bool Load(T db)
@@ -53,7 +49,7 @@ namespace TomLabs.OpenSource.SQuirreL.Data
 				//}
 				IsLoaded = true;
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				Debug.WriteLine(ex.Message);
 				IsLoaded = false;
