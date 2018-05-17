@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace TomLabs.OpenSource.SQuirreL.DataProviders
+namespace TomLabs.SQuirreL.DataProviders
 {
 	public abstract class DB : IDisposable
 	{
-		protected DB() { }
+		protected DB()
+		{
+		}
 
 		public IDbConnection Connection { get; protected set; }
 
@@ -30,7 +29,7 @@ namespace TomLabs.OpenSource.SQuirreL.DataProviders
 		/// <param name="connectionString"></param>
 		/// <param name="conn"></param>
 		/// <returns></returns>
-		protected void Connect<TConncetion, TException>(string connectionString, Func<string, TConncetion> conn) 
+		protected void Connect<TConncetion, TException>(string connectionString, Func<string, TConncetion> conn)
 			where TConncetion : IDbConnection, new()
 			where TException : DbException
 		{
@@ -40,7 +39,7 @@ namespace TomLabs.OpenSource.SQuirreL.DataProviders
 			{
 				Connection.Open();
 			}
-			catch (TException ex)	// TODO
+			catch (TException ex)   // TODO
 			{
 				Console.WriteLine(ex.Message);
 				throw;
@@ -52,17 +51,17 @@ namespace TomLabs.OpenSource.SQuirreL.DataProviders
 			}
 		}
 
-		public void BeginTransaction()
+		public virtual void BeginTransaction()
 		{
 			Transaction = Connection?.BeginTransaction();
 		}
 
-		public void CommitTransaction()
+		public virtual void CommitTransaction()
 		{
 			Transaction.Commit();
 		}
 
-		public void RollBackTransaction()
+		public virtual void RollBackTransaction()
 		{
 			Transaction.Rollback();
 		}
@@ -87,7 +86,7 @@ namespace TomLabs.OpenSource.SQuirreL.DataProviders
 				Connection = null;
 		}
 
-		protected virtual IList<Tuple<string,string>> GetCollection<TConnection>(string collectionName, string[] restrictions = null) where TConnection : DbConnection
+		protected virtual IList<Tuple<string, string>> GetCollection<TConnection>(string collectionName, string[] restrictions = null) where TConnection : DbConnection
 		{
 			List<Tuple<string, string>> objects = new List<Tuple<string, string>>();
 			DataTable dt = ((TConnection)Connection).GetSchema(collectionName, restrictions);

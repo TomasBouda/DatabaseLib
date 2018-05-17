@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TomLabs.OpenSource.SQuirreL.DataProviders;
-using TomLabs.OpenSource.SQuirreL.DataProviders.ConnectionParams;
+using TomLabs.SQuirreL.DataProviders;
+using TomLabs.SQuirreL.DataProviders.ConnectionParams;
 
-namespace TomLabs.OpenSource.SQuirreL.Search
+namespace TomLabs.SQuirreL.Search
 {
 	public class DataProvider
 	{
-
 		private IList<IDatabaseManager> DatabaseManagers { get; set; }
 
 		public IDatabaseManager ActiveManager { get; set; }

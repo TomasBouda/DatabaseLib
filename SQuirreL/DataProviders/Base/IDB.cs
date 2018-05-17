@@ -1,19 +1,12 @@
-﻿using TomLabs.OpenSource.SQuirreL.Data;
-using TomLabs.OpenSource.SQuirreL.DataProviders;
-using TomLabs.OpenSource.SQuirreL.DataProviders.ConnectionParams;
-using TomLabs.OpenSource.SQuirreL.Search;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using TomLabs.SQuirreL.Data;
+using TomLabs.SQuirreL.DataProviders.ConnectionParams;
 
-namespace TomLabs.OpenSource.SQuirreL.DataProviders
+namespace TomLabs.SQuirreL.DataProviders
 {
-    public interface IDB : IDisposable
+	public interface IDB : IDisposable
 	{
 		bool IsConnected { get; }
 		IDbConnection Connection { get; }

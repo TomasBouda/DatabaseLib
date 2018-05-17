@@ -1,21 +1,20 @@
-﻿ using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data.SqlClient;
 using System.Data;
-using TomLabs.OpenSource.SQuirreL.Data;
-using TomLabs.OpenSource.SQuirreL.Misc;
+using System.Data.SqlClient;
+using System.Linq;
 using System.Text.RegularExpressions;
-using TomLabs.OpenSource.SQuirreL.DataProviders.ConnectionParams;
-using TomLabs.OpenSource.SQuirreL.Search;
+using TomLabs.SQuirreL.Data;
+using TomLabs.SQuirreL.DataProviders.ConnectionParams;
+using TomLabs.SQuirreL.Misc;
 
-namespace TomLabs.OpenSource.SQuirreL.DataProviders
+namespace TomLabs.SQuirreL.DataProviders
 {
 	public class MSSQL : DB, IDB
-	{ 
-		public MSSQL() { }
+	{
+		public MSSQL()
+		{
+		}
 
 		public MSSQL(string server, string database, string user = null, string password = null)
 		{
@@ -24,10 +23,10 @@ namespace TomLabs.OpenSource.SQuirreL.DataProviders
 
 		public void Connect(string server, string database, string user = null, string password = null, string integratedSec = "SSPI")
 		{
-			string connectionString = $"Server={server};Database={database};Integrated security={integratedSec};" 
+			string connectionString = $"Server={server};Database={database};Integrated security={integratedSec};"
 				+ (user != null && password != null ? $"User id={user};Password={password};" : "");
 
-			Connect(connectionString);			
+			Connect(connectionString);
 		}
 
 		public void Connect<TConn>(TConn @params) where TConn : IConnectionParams
@@ -46,7 +45,7 @@ namespace TomLabs.OpenSource.SQuirreL.DataProviders
 
 		public int Execute(string query)
 		{
-			using(var cmd = new SqlCommand(query, (SqlConnection)Connection))
+			using (var cmd = new SqlCommand(query, (SqlConnection)Connection))
 				return cmd.ExecuteNonQuery();
 		}
 
@@ -116,7 +115,7 @@ namespace TomLabs.OpenSource.SQuirreL.DataProviders
 
 		public int ExecuteCommand(SqlCommand cmd)
 		{
-			using(cmd)
+			using (cmd)
 				return cmd.ExecuteNonQuery();
 		}
 
@@ -152,22 +151,22 @@ namespace TomLabs.OpenSource.SQuirreL.DataProviders
 		public IList<string> GetTriggers(string tableName)
 		{
 			string script = $@"SELECT
-				sysobjects.name AS trigger_name 
-				,USER_NAME(sysobjects.uid) AS trigger_owner 
-				,s.name AS table_schema 
-				,OBJECT_NAME(parent_obj) AS table_name 
-				,OBJECTPROPERTY( id, 'ExecIsUpdateTrigger') AS isupdate 
-				,OBJECTPROPERTY( id, 'ExecIsDeleteTrigger') AS isdelete 
-				,OBJECTPROPERTY( id, 'ExecIsInsertTrigger') AS isinsert 
-				,OBJECTPROPERTY( id, 'ExecIsAfterTrigger') AS isafter 
-				,OBJECTPROPERTY( id, 'ExecIsInsteadOfTrigger') AS isinsteadof 
-				,OBJECTPROPERTY(id, 'ExecIsTriggerDisabled') AS [disabled] 
+				sysobjects.name AS trigger_name
+				,USER_NAME(sysobjects.uid) AS trigger_owner
+				,s.name AS table_schema
+				,OBJECT_NAME(parent_obj) AS table_name
+				,OBJECTPROPERTY( id, 'ExecIsUpdateTrigger') AS isupdate
+				,OBJECTPROPERTY( id, 'ExecIsDeleteTrigger') AS isdelete
+				,OBJECTPROPERTY( id, 'ExecIsInsertTrigger') AS isinsert
+				,OBJECTPROPERTY( id, 'ExecIsAfterTrigger') AS isafter
+				,OBJECTPROPERTY( id, 'ExecIsInsteadOfTrigger') AS isinsteadof
+				,OBJECTPROPERTY(id, 'ExecIsTriggerDisabled') AS [disabled]
 			FROM sysobjects
-			INNER JOIN sysusers 
+			INNER JOIN sysusers
 				ON sysobjects.uid = sysusers.uid
-			INNER JOIN sys.tables t 
+			INNER JOIN sys.tables t
 				ON sysobjects.parent_obj = t.object_id
-			INNER JOIN sys.schemas s 
+			INNER JOIN sys.schemas s
 				ON t.schema_id = s.schema_id
 			WHERE sysobjects.type = 'TR' and OBJECT_NAME(parent_obj) = '{tableName}'";
 
@@ -179,10 +178,10 @@ namespace TomLabs.OpenSource.SQuirreL.DataProviders
 		{
 			var allObjects = new List<IDbObject>();
 
-			if((including & (EDbObjects.Tables | EDbObjects.Columns)) != 0)
+			if ((including & (EDbObjects.Tables | EDbObjects.Columns)) != 0)
 				allObjects.AddRange(GetTables().Select(x => new Table<MSSQL>(x.Item1, x.Item2, this)));
 
-			 if ((including & EDbObjects.Views) != 0)
+			if ((including & EDbObjects.Views) != 0)
 				allObjects.AddRange(GetViews().Select(x => new View<MSSQL>(x.Item1, x.Item2, this)));
 
 			if ((including & EDbObjects.StoredProcedures) != 0)
@@ -193,7 +192,7 @@ namespace TomLabs.OpenSource.SQuirreL.DataProviders
 
 		public string GetScriptFor(string objectName, EDbObjects objType = EDbObjects.None)
 		{
-			using(SqlCommand sqlCommand = new SqlCommand("sys.sp_helptext", (SqlConnection)Connection))
+			using (SqlCommand sqlCommand = new SqlCommand("sys.sp_helptext", (SqlConnection)Connection))
 			{
 				sqlCommand.CommandType = CommandType.StoredProcedure;
 				sqlCommand.Parameters.AddWithValue("@objname", objectName);
@@ -211,7 +210,7 @@ namespace TomLabs.OpenSource.SQuirreL.DataProviders
 
 		public DataSet GetColumnsInfo(string schema, string tableName)
 		{
-			string script = 
+			string script =
 			$@"SELECT DISTINCT
 				c.name 'Column Name',
 				t.Name 'Data type',
@@ -220,13 +219,13 @@ namespace TomLabs.OpenSource.SQuirreL.DataProviders
 				c.scale ,
 				c.is_nullable,
 				ISNULL(i.is_primary_key, 0) 'Primary Key'
-			FROM    
+			FROM
 				sys.columns c
-			INNER JOIN 
+			INNER JOIN
 				sys.types t ON c.user_type_id = t.user_type_id
-			LEFT OUTER JOIN 
+			LEFT OUTER JOIN
 				sys.index_columns ic ON ic.object_id = c.object_id AND ic.column_id = c.column_id
-			LEFT OUTER JOIN 
+			LEFT OUTER JOIN
 				sys.indexes i ON ic.object_id = i.object_id AND ic.index_id = i.index_id
 			WHERE
 				c.object_id = OBJECT_ID('{schema}.{tableName}')";
@@ -236,7 +235,7 @@ namespace TomLabs.OpenSource.SQuirreL.DataProviders
 
 		public IList<string> SearchColumn(string columnName)
 		{
-			string script = 
+			string script =
 				$@"SELECT c.name AS ColName, t.name AS TableName
 				FROM sys.columns c
 					JOIN sys.tables t ON c.object_id = t.object_id
@@ -248,7 +247,7 @@ namespace TomLabs.OpenSource.SQuirreL.DataProviders
 
 		public IList<string> SearchInScripts(string query)
 		{
-			string script = 
+			string script =
 			$@"SELECT DISTINCT
 				   o.name AS Object_Name,
 				   o.type_desc

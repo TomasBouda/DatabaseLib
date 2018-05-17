@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TomLabs.OpenSource.SQuirreL.Data;
-using Microsoft.SqlServer.Management.Common;
-using System.Data.SqlClient;
+﻿using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
+using System.Data;
+using System.Data.SqlClient;
 
-namespace TomLabs.OpenSource.SQuirreL.DataProviders.Special
+namespace TomLabs.SQuirreL.DataProviders.Special
 {
-	public class MSSQLServer : DB	// TODO
+	public class MSSQLServer : DB   // TODO
 	{
 		public ServerConnection ServerConnection { get; set; }
 		public Server Server { get; set; }
 
-		public MSSQLServer() { }
+		public MSSQLServer()
+		{
+		}
 
 		public MSSQLServer(SqlConnection connection)
 		{
@@ -78,6 +74,21 @@ namespace TomLabs.OpenSource.SQuirreL.DataProviders.Special
 				cmd.Parameters.Add(param);
 			}
 			return cmd;
+		}
+
+		public override void BeginTransaction()
+		{
+			ServerConnection.BeginTransaction();
+		}
+
+		public override void CommitTransaction()
+		{
+			ServerConnection.CommitTransaction();
+		}
+
+		public override void RollBackTransaction()
+		{
+			ServerConnection.RollBackTransaction();
 		}
 	}
 }

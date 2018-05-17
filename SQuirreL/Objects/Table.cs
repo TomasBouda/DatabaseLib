@@ -2,19 +2,21 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using TomLabs.OpenSource.SQuirreL.DataProviders;
+using TomLabs.SQuirreL.DataProviders;
 
-namespace TomLabs.OpenSource.SQuirreL.Data
+namespace TomLabs.SQuirreL.Data
 {
 	public interface ITable : IDbObject
 	{
 		DataSet Columns { get; }
+
 		DataSet Select(string where = null);
 	}
 
 	public class Table<T> : DbObject<T>, ITable, IDbObject where T : class, IDB, new()
 	{
 		private DataSet _columns;
+
 		public DataSet Columns
 		{
 			get
@@ -34,7 +36,6 @@ namespace TomLabs.OpenSource.SQuirreL.Data
 
 		public Table(string schema, string name, T db, bool triggers) : this(schema, name, db)
 		{
-
 		}
 
 		public override bool Load(T db)

@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace TomLabs.OpenSource.SQuirreL.DataProviders
+namespace TomLabs.SQuirreL.DataProviders
 {
-	class Flags { }
+	internal class Flags
+	{ }
 
 	[Flags]
 	public enum EDbObjects : int

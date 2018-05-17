@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace TomLabs.OpenSource.SQuirreL.Misc
+namespace TomLabs.SQuirreL.Misc
 {
 	public static class Extensions
 	{

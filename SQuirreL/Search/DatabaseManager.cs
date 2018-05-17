@@ -1,15 +1,12 @@
-﻿using TomLabs.OpenSource.SQuirreL.Data;
-using TomLabs.OpenSource.SQuirreL.DataProviders;
-using TomLabs.OpenSource.SQuirreL.DataProviders.ConnectionParams;
-using TomLabs.OpenSource.SQuirreL.Misc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using TomLabs.SQuirreL.Data;
+using TomLabs.SQuirreL.DataProviders;
+using TomLabs.SQuirreL.DataProviders.ConnectionParams;
 
-namespace TomLabs.OpenSource.SQuirreL.Search
+namespace TomLabs.SQuirreL.Search
 {
 	public enum Sort
 	{

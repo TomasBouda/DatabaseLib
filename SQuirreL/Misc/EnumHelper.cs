@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace TomLabs.OpenSource.SQuirreL.Misc
+namespace TomLabs.SQuirreL.Misc
 {
 	public static class EnumHelper<T> where T : struct
 	{

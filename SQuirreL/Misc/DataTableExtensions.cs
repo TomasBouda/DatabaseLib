@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
+﻿using System.Data;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace TomLabs.OpenSource.SQuirreL.Misc
+namespace TomLabs.SQuirreL.Misc
 {
 	public static class DataTableExtensions
 	{
@@ -74,7 +70,6 @@ namespace TomLabs.OpenSource.SQuirreL.Misc
 		{
 			int diff = maxLength - text.Length;
 			return new string(' ', diff / 2) + text + new string(' ', (int)(diff / 2.0 + 0.5));
-
 		}
 	}
 }

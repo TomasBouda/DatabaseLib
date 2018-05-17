@@ -1,16 +1,12 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TomLabs.OpenSource.SQuirreL.Data;
-using TomLabs.OpenSource.SQuirreL.DataProviders.ConnectionParams;
-using TomLabs.OpenSource.SQuirreL.Search;
-using MySql.Data.MySqlClient;
-using TomLabs.OpenSource.SQuirreL.Misc;
+using TomLabs.SQuirreL.Data;
+using TomLabs.SQuirreL.DataProviders.ConnectionParams;
 
-namespace TomLabs.OpenSource.SQuirreL.DataProviders
+namespace TomLabs.SQuirreL.DataProviders
 {
 	public class MySql : DB, IDB // TODO
 	{
@@ -107,22 +103,22 @@ namespace TomLabs.OpenSource.SQuirreL.DataProviders
 			switch (objType)
 			{
 				case EDbObjects.Tables:
-				{
-					script = $"show create table {objectName}";
-					var ds = ExecuteDataSet(script);
-					return ds.Tables[0]?.Rows[0]?.Field<string>(GetScriptForTableColumn);
-				}
+					{
+						script = $"show create table {objectName}";
+						var ds = ExecuteDataSet(script);
+						return ds.Tables[0]?.Rows[0]?.Field<string>(GetScriptForTableColumn);
+					}
 				case EDbObjects.Views:
-				{
-					script = $"show create view {objectName}";
-					var ds = ExecuteDataSet(script);
-					return ds.Tables[0]?.Rows[0]?.Field<string>(GetScriptForViewolumn);
+					{
+						script = $"show create view {objectName}";
+						var ds = ExecuteDataSet(script);
+						return ds.Tables[0]?.Rows[0]?.Field<string>(GetScriptForViewolumn);
 					}
 				case EDbObjects.StoredProcedures:
-				{
-					script = $"show create procedure {objectName}";
-					var ds = ExecuteDataSet(script);
-					return ds.Tables[0]?.Rows[0]?.Field<string>(GetScriptForStoredProcedureColumn);
+					{
+						script = $"show create procedure {objectName}";
+						var ds = ExecuteDataSet(script);
+						return ds.Tables[0]?.Rows[0]?.Field<string>(GetScriptForStoredProcedureColumn);
 					}
 
 				default: return "";

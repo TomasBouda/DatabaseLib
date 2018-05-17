@@ -1,12 +1,7 @@
-﻿using TomLabs.OpenSource.SQuirreL.Data;
-using TomLabs.OpenSource.SQuirreL.DataProviders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using TomLabs.SQuirreL.Data;
 
-namespace TomLabs.OpenSource.SQuirreL.Search
+namespace TomLabs.SQuirreL.Search
 {
 	public class SearchResults
 	{
