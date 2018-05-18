@@ -80,10 +80,8 @@ configuration: Release
 
 build:
   parallel: true                  # enable MSBuild parallel builds
-  project: SQuirreL.sln      # path to Visual Studio solution or project
+  project: TomLabs.SQuirreL.csproj     # path to Visual Studio solution or project
   publish_nuget: true             # package projects with .nuspec files and push to artifacts
-  publish_nuget_symbols: true     # generate and publish NuGet symbol packages
-  include_nuget_references: true  # add -IncludeReferencedProjects option while packaging NuGet artifacts
 
   # MSBuild verbosity level
   verbosity: normal
@@ -110,7 +108,6 @@ deploy:
     api_key:
       secure: IxlR/+bZG214/Em4LMd5QyQ87wCQNsYbIZoSgIRhBA0xZtYnMeTP0WeKsoFd+i4i
     skip_symbols: false
-    artifact: SQuirreL.nupkg
 
     # Deploy to GitHub Releases
   - provider: GitHub
