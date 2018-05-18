@@ -96,8 +96,6 @@ artifacts:
 
   # pushing all *.nupkg files in build directory recursively
   - path: '**\*.nupkg'
-  - name: SQuirreL.nupkg
-
 
 #---------------------------------#
 #     deployment configuration    #
