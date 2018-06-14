@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="dlls\**" />
+    <Compile Remove="_dlls\**" />
+    <EmbeddedResource Remove="dlls\**" />
+    <EmbeddedResource Remove="_dlls\**" />
+    <None Remove="dlls\**" />
+    <None Remove="_dlls\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="8.0.11" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.4.3" />
+    <PackageReference Include="TomLabs.Shadowgem" Version="1.1.1" />
+  </ItemGroup>
+
+</Project>

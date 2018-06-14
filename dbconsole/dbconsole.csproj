@@ -50,9 +50,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SQuirreL\TomLabs.SQuirreL.csproj">
+    <ProjectReference Include="..\SQuirreL\TomLabs.SQuirreL_OLD.csproj">
       <Project>{27a17655-b321-4a86-86b2-2b3f2c75bba6}</Project>
-      <Name>TomLabs.SQuirreL</Name>
+      <Name>TomLabs.SQuirreL_OLD</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
