@@ -16,10 +16,7 @@ namespace TomLabs.SQuirreL.DataProviders
 
 		public IDbTransaction Transaction { get; protected set; }
 
-		public virtual bool IsConnected
-		{
-			get { return Connection?.State == ConnectionState.Open; }
-		}
+		public virtual bool IsConnected => Connection?.State == ConnectionState.Open;
 
 		/// <summary>
 		/// Connects to a DB using given connection string
@@ -84,18 +81,21 @@ namespace TomLabs.SQuirreL.DataProviders
 		public void Dispose()
 		{
 			if (Disconnect())
-				Connection = null;
+			{
+				Transaction.Dispose();
+				Connection.Dispose();
+			}
 		}
 
-		protected virtual IList<RawObject> GetCollection<TConnection>(string collectionName, string[] restrictions = null) where TConnection : DbConnection
+		protected virtual IList<RawDbObject> GetCollection<TConnection>(string collectionName, string[] restrictions = null) where TConnection : DbConnection
 		{
-			List<RawObject> objects = new List<RawObject>();
+			List<RawDbObject> objects = new List<RawDbObject>();
 			DataTable dt = ((TConnection)Connection).GetSchema(collectionName, restrictions);
 			foreach (DataRow row in dt.Rows)
 			{
 				string objectSchema = (string)row[1];
 				string objectName = (string)row[2];
-				objects.Add(new RawObject(objectSchema, objectName));
+				objects.Add(new RawDbObject(objectSchema, objectName));
 			}
 			return objects;
 		}

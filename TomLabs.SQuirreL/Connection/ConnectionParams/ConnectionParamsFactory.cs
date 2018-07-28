@@ -6,9 +6,9 @@ namespace TomLabs.SQuirreL.Connection.ConnectionParams
 {
     public static class ConnectionParamsFactory
     {
-		public static IConnectionParams CreateMssqlConnectionParams(string server, string database, string username = null, string password = null)
+		public static IConnectionParams CreateMssqlConnectionParams(string server, string database, string username = null, string password = null, bool integratedSecurity = true)
 		{
-			return new MSSQLConnectionParams(server, database, username, password);
+			return new MSSQLConnectionParams(server, database, username, password, integratedSecurity);
 		}
 	}
 }

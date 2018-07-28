@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using TomLabs.SQuirreL.Connection.ConnectionParams;
 using TomLabs.SQuirreL.Data;
+using TomLabs.SQuirreL.Objects;
 
 namespace TomLabs.SQuirreL.DataProviders
 {
@@ -38,8 +39,8 @@ namespace TomLabs.SQuirreL.DataProviders
 
 		DataSet GetColumnsInfo(string schema, string tableName);
 
-		IList<string> FindColumn(string columnName);
+		IList<RawDbObject> FindColumn(string columnName);
 
-		IList<string> FindInScripts(string query);
+		IList<RawDbObject> FindInScripts(string query);
 	}
 }

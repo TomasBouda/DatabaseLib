@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using TomLabs.SQuirreL.Connection.ConnectionParams;
 using TomLabs.SQuirreL.Data;
+using TomLabs.SQuirreL.Objects;
 
 namespace TomLabs.SQuirreL.DataProviders
 {
@@ -86,13 +87,13 @@ namespace TomLabs.SQuirreL.DataProviders
 			var allObjects = new List<IDbObject>();
 
 			if ((including & (ObjectTypes.Tables | ObjectTypes.Columns)) != 0)
-				allObjects.AddRange(GetTables().Select(x => new Table<MySql>(x.Item1, x.Item2, this)));
+				allObjects.AddRange(GetTables().Select(x => new Table<MySql>(x.Schema, x.Name, this)));
 
 			if ((including & ObjectTypes.Views) != 0)
-				allObjects.AddRange(GetViews().Select(x => new View<MySql>(x.Item1, x.Item2, this)));
+				allObjects.AddRange(GetViews().Select(x => new View<MySql>(x.Schema, x.Name, this)));
 
 			if ((including & ObjectTypes.StoredProcedures) != 0)
-				allObjects.AddRange(GetStoredProcedures().Select(x => new StoredProcedure<MySql>(x.Item1, x.Item2, this)));
+				allObjects.AddRange(GetStoredProcedures().Select(x => new StoredProcedure<MySql>(x.Schema, x.Name, this)));
 
 			return allObjects;
 		}
@@ -102,35 +103,35 @@ namespace TomLabs.SQuirreL.DataProviders
 			string script;
 			switch (objType)
 			{
-				//case EDbObjects.Tables:
-				//	{
-				//		script = $"show create table {objectName}";
-				//		var ds = ExecuteDataSet(script);
-				//		return ds.Tables[0]?.Rows[0]?.Field<string>(GetScriptForTableColumn);
-				//	}
-				//case EDbObjects.Views:
-				//	{
-				//		script = $"show create view {objectName}";
-				//		var ds = ExecuteDataSet(script);
-				//		return ds.Tables[0]?.Rows[0]?.Field<string>(GetScriptForViewolumn);
-				//	}
-				//case EDbObjects.StoredProcedures:
-				//	{
-				//		script = $"show create procedure {objectName}";
-				//		var ds = ExecuteDataSet(script);
-				//		return ds.Tables[0]?.Rows[0]?.Field<string>(GetScriptForStoredProcedureColumn);
-				//	}
+				case ObjectTypes.Tables:
+					{
+						script = $"show create table {objectName}";
+						var ds = ExecuteDataSet(script);
+						return ds.Tables[0]?.Rows[0]?.Field<string>(GetScriptForTableColumn);
+					}
+				case ObjectTypes.Views:
+					{
+						script = $"show create view {objectName}";
+						var ds = ExecuteDataSet(script);
+						return ds.Tables[0]?.Rows[0]?.Field<string>(GetScriptForViewolumn);
+					}
+				case ObjectTypes.StoredProcedures:
+					{
+						script = $"show create procedure {objectName}";
+						var ds = ExecuteDataSet(script);
+						return ds.Tables[0]?.Rows[0]?.Field<string>(GetScriptForStoredProcedureColumn);
+					}
 
 				default: return "";
 			}
 		}
 
-		public IList<Tuple<string, string>> GetStoredProcedures()
+		public IList<RawDbObject> GetStoredProcedures()
 		{
 			return GetCollection<MySqlConnection>("Procedures");
 		}
 
-		public IList<Tuple<string, string>> GetTables()
+		public IList<RawDbObject> GetTables()
 		{
 			return GetCollection<MySqlConnection>("Tables", new string[] { null, null, null, "BASE TABLE" });
 		}
@@ -140,22 +141,17 @@ namespace TomLabs.SQuirreL.DataProviders
 			throw new NotImplementedException();
 		}
 
-		public IList<Tuple<string, string>> GetViews()
+		public IList<RawDbObject> GetViews()
 		{
 			return GetCollection<MySqlConnection>("Views");
 		}
 
-		public IList<string> FindColumn(string columnName)
+		public IList<RawDbObject> FindColumn(string columnName)
 		{
 			throw new NotImplementedException();
 		}
 
-		public IList<string> FindInScripts(string query)
-		{
-			throw new NotImplementedException();
-		}
-
-		public IDbCommand CreateCommand(string query, CommandType type = CommandType.Text)
+		public IList<RawDbObject> FindInScripts(string query)
 		{
 			throw new NotImplementedException();
 		}

@@ -22,9 +22,9 @@ namespace TomLabs.SQuirreL.DataProviders
 			Connect(server, database, user, password);
 		}
 
-		public void Connect(string server, string database, string user = null, string password = null, string integratedSec = "SSPI")
+		public void Connect(string server, string database, string user = null, string password = null, bool integratedSecurity = true)
 		{
-			string connectionString = $"Server={server};Database={database};Integrated security={integratedSec};"
+			string connectionString = $"Server={server};Database={database};Integrated security={(integratedSecurity ? "true" : "false")};"
 				+ (user != null && password != null ? $"User id={user};Password={password};" : "");
 
 			Connect(connectionString);
@@ -120,17 +120,17 @@ namespace TomLabs.SQuirreL.DataProviders
 				return cmd.ExecuteNonQuery();
 		}
 
-		public IList<RawObject> GetTables()
+		public IList<RawDbObject> GetTables()
 		{
 			return GetCollection<SqlConnection>("Tables", new string[] { null, null, null, "BASE TABLE" });
 		}
 
-		public IList<RawObject> GetViews()
+		public IList<RawDbObject> GetViews()
 		{
 			return GetCollection<SqlConnection>("Views");
 		}
 
-		public IList<RawObject> GetStoredProcedures()
+		public IList<RawDbObject> GetStoredProcedures()
 		{
 			return GetCollection<SqlConnection>("Procedures");
 		}
@@ -185,12 +185,13 @@ namespace TomLabs.SQuirreL.DataProviders
 				sqlCommand.Parameters.AddWithValue("@objname", objectName);
 				using (DataSet ds = new DataSet())
 				{
-					SqlDataAdapter sqlDataAdapter = new SqlDataAdapter();
-					sqlDataAdapter.SelectCommand = sqlCommand;
-					sqlDataAdapter.Fill(ds);
-					sqlDataAdapter.Dispose();
+					using(SqlDataAdapter sqlDataAdapter = new SqlDataAdapter())
+					{
+						sqlDataAdapter.SelectCommand = sqlCommand;
+						sqlDataAdapter.Fill(ds);
 
-					return ds.Tables[0].ToStringSingle();
+						return ds.Tables[0].ToStringSingle();
+					}
 				}
 			}
 		}
@@ -220,22 +221,23 @@ namespace TomLabs.SQuirreL.DataProviders
 			return ExecuteDataSet(script);
 		}
 
-		public IList<string> FindColumn(string columnName)
+		public IList<RawDbObject> FindColumn(string columnName)
 		{
 			string script =
-				$@"SELECT c.name AS ColName, t.name AS TableName
+				$@"SELECT c.name AS ColName, SCHEMA_NAME(t.schema_id) AS SchemaName , t.name AS TableName
 				FROM sys.columns c
 					JOIN sys.tables t ON c.object_id = t.object_id
 				WHERE c.name LIKE '%{columnName}%'";// TODO wildcards
 
 			var dataSet = ExecuteDataSet(script);
-			return dataSet.ColumnToList("TableName");
+			return dataSet.ToRawObject();
 		}
 
-		public IList<string> FindInScripts(string query)
+		public IList<RawDbObject> FindInScripts(string query)
 		{
 			string script =
 			$@"SELECT DISTINCT
+				   SCHEMA_NAME(o.schema_id) AS SchemaName,
 				   o.name AS Object_Name,
 				   o.type_desc
 			  FROM sys.sql_modules m
@@ -245,7 +247,7 @@ namespace TomLabs.SQuirreL.DataProviders
 			 WHERE m.definition Like '%{query}%';";
 
 			var dataSet = ExecuteDataSet(script);
-			return dataSet.ColumnToList("Object_Name");
+			return dataSet.ToRawObject();
 		}
 	}
 }

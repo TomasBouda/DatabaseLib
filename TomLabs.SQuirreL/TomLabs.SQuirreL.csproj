@@ -14,8 +14,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Search\DatabaseManager.cs" />
+    <Compile Remove="Search\DataProvider.cs" />
+    <Compile Remove="Search\IDatabaseManager.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Search\DatabaseManager.cs" />
+    <None Include="Search\DataProvider.cs" />
+    <None Include="Search\IDatabaseManager.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.11" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.4.3" />
+    <PackageReference Include="Serilog" Version="2.7.1" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.5.0" />
     <PackageReference Include="TomLabs.Shadowgem" Version="1.1.1" />
   </ItemGroup>
 

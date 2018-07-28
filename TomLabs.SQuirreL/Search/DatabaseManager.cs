@@ -4,7 +4,6 @@ using System.Data;
 using System.Linq;
 using TomLabs.SQuirreL.Data;
 using TomLabs.SQuirreL.DataProviders;
-using TomLabs.SQuirreL.DataProviders.ConnectionParams;
 
 namespace TomLabs.SQuirreL.Search
 {
