@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomLabs.SQuirreL_OLD", "SQuirreL\TomLabs.SQuirreL_OLD.csproj", "{27A17655-B321-4A86-86B2-2B3F2C75BBA6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dbconsole", "dbconsole\dbconsole.csproj", "{696AA862-A2C9-4BAC-8523-752BA04E8F54}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{00334213-2042-4229-AEC0-4C149785C293}"
@@ -15,7 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomLabs.SQuirreL", "TomLabs.SQuirreL\TomLabs.SQuirreL.csproj", "{47E46E91-788D-4FFF-987C-1639C883673C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TomLabs.SQuirreL", "TomLabs.SQuirreL\TomLabs.SQuirreL.csproj", "{47E46E91-788D-4FFF-987C-1639C883673C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomLabs.SQuirreL.MSSQLServer", "TomLabs.SQuirreL.MSSQLServer\TomLabs.SQuirreL.MSSQLServer.csproj", "{D003C981-54FF-4A18-A5F1-F4B41DBA806C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{27A17655-B321-4A86-86B2-2B3F2C75BBA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{27A17655-B321-4A86-86B2-2B3F2C75BBA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{27A17655-B321-4A86-86B2-2B3F2C75BBA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{27A17655-B321-4A86-86B2-2B3F2C75BBA6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{696AA862-A2C9-4BAC-8523-752BA04E8F54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{696AA862-A2C9-4BAC-8523-752BA04E8F54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{696AA862-A2C9-4BAC-8523-752BA04E8F54}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -35,6 +31,10 @@ Global
 		{47E46E91-788D-4FFF-987C-1639C883673C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47E46E91-788D-4FFF-987C-1639C883673C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47E46E91-788D-4FFF-987C-1639C883673C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D003C981-54FF-4A18-A5F1-F4B41DBA806C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D003C981-54FF-4A18-A5F1-F4B41DBA806C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D003C981-54FF-4A18-A5F1-F4B41DBA806C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D003C981-54FF-4A18-A5F1-F4B41DBA806C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

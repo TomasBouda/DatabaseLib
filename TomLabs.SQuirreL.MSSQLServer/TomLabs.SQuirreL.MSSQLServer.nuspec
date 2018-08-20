@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package>
+	<metadata>
+		<id>$id$</id>
+		<version>$version$</version>
+		<title>$title$</title>
+		<authors>$author$</authors>
+		<owners>$author$</owners>
+		<projectUrl>https://github.com/TomasBouda/SQuirreL</projectUrl>
+		<iconUrl>https://cdn.rawgit.com/TomasBouda/SQuirreL/6aa1f89a/Images/squirrel.png</iconUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>$description$</description>
+		<releaseNotes>fody removed</releaseNotes>
+		<copyright>Copyright 2018 Tomáš Bouda</copyright>
+		<tags>Tag1 Tag2</tags>
+	</metadata>
+</package>

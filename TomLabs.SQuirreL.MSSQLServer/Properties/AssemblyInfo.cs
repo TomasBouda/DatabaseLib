@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TomLabs.SQuirreL.MSSQLServer")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Wrapper for Microsoft.SqlServer types")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Tomáš Bouda")]
 [assembly: AssemblyProduct("TomLabs.SQuirreL.MSSQLServer")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]

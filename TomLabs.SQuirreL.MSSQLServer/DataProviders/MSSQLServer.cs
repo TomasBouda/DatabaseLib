@@ -14,11 +14,9 @@ namespace TomLabs.SQuirreL.DataProviders.Special
 		{
 		}
 
-		public MSSQLServer(SqlConnection connection)
+		public MSSQLServer(string connectionString)
 		{
-			Connection = connection;
-			ServerConnection = new ServerConnection(connection);
-			Server = new Server(ServerConnection);
+			Connect(connectionString);
 		}
 
 		public MSSQLServer(string server, string database, string user = null, string password = null)
@@ -37,13 +35,16 @@ namespace TomLabs.SQuirreL.DataProviders.Special
 		public void Connect(string connectionString)
 		{
 			Connect<SqlConnection, SqlException>(connectionString, c => new SqlConnection(c));
+
+			ServerConnection = new ServerConnection(Connection as SqlConnection);
+			Server = new Server(ServerConnection);
 		}
 
 		public int Execute(string query, params SqlParameter[] @params)
 		{
 			using (var cmd = Server.ConnectionContext.SqlConnectionObject.CreateCommand())
 			{
-				cmd.CommandText = query;//"INSERT INTO dbo.UpdateLog (Name) VALUES (@KitName)"
+				cmd.CommandText = query;
 				cmd.CommandType = CommandType.Text;
 				CommandAddParams(cmd, @params);
 

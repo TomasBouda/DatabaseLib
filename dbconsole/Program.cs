@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using TomLabs.SQuirreL.DataProviders;
+using TomLabs.SQuirreL.Connection;
 using static System.Console;
 
 namespace dbconsole
@@ -9,12 +9,8 @@ namespace dbconsole
 	{
 		private static void Main(string[] args)
 		{
-			using (var conn = new MSSQL(".", "FairCredit"))
-			{
-				foreach (Tuple<string, string> table in conn.GetTables().OrderBy(o => o).ToList())
-					WriteLine($"{table.Item1}.{table.Item2}");
-			}
-
+			var conn = ConnectionFactory.CreateMssqlConnection(".", "FairCredit");
+			var a = conn.ExecuteDataSet("select * from users");
 			ReadLine();
 		}
 	}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 using TomLabs.SQuirreL.Connection.ConnectionParams;
 using TomLabs.SQuirreL.Data;
@@ -12,6 +13,7 @@ namespace TomLabs.SQuirreL.Connection
 		private MSSQL DB { get; set; }
 
 		public event EventHandler Connected;
+
 		public event EventHandler Disconnected;
 
 		public IEnumerable<IDbObject> Objects { get; private set; }
@@ -25,9 +27,12 @@ namespace TomLabs.SQuirreL.Connection
 			DB = new MSSQL();
 		}
 
-		internal MSSQLConnection(IConnectionParams @params) : this()
+		internal MSSQLConnection(IConnectionParams @params, bool connect = true) : this()
 		{
-			Connect(@params);
+			if (connect)
+			{
+				Connect(@params);
+			}
 		}
 
 		public bool Connect(IConnectionParams @params)
@@ -38,6 +43,8 @@ namespace TomLabs.SQuirreL.Connection
 
 				if (IsConnected)
 				{
+					ConnectionString = DB.Connection.ConnectionString;
+
 					Connected?.Invoke(this, new EventArgs());
 
 					return true;
@@ -60,7 +67,23 @@ namespace TomLabs.SQuirreL.Connection
 			return null;
 		}
 
+		public int Execute(string query)
+		{
+			return DB.Execute(query);
+		}
+
+		public IDataReader ExecuteReader(string query)
+		{
+			return DB.ExecuteReader(query);
+		}
+
+		public DataSet ExecuteDataSet(string query)
+		{
+			return DB.ExecuteDataSet(query);
+		}
+
 		#region IDisposable Support
+
 		private bool disposedValue = false; // To detect redundant calls
 
 		protected virtual void Dispose(bool disposing)
@@ -95,6 +118,7 @@ namespace TomLabs.SQuirreL.Connection
 			// TODO: uncomment the following line if the finalizer is overridden above.
 			// GC.SuppressFinalize(this);
 		}
-		#endregion
+
+		#endregion IDisposable Support
 	}
 }
