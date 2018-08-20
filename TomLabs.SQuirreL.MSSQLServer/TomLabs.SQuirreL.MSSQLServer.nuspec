@@ -7,11 +7,11 @@
 		<authors>$author$</authors>
 		<owners>$author$</owners>
 		<projectUrl>https://github.com/TomasBouda/SQuirreL</projectUrl>
-		<iconUrl>https://cdn.rawgit.com/TomasBouda/SQuirreL/6aa1f89a/Images/squirrel.png</iconUrl>
+		<iconUrl>https://cdn.rawgit.com/TomasBouda/SQuirreL/6ea3565e/Images/squirrel_server.png</iconUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>$description$</description>
 		<releaseNotes>fody removed</releaseNotes>
 		<copyright>Copyright 2018 Tomáš Bouda</copyright>
-		<tags>Tag1 Tag2</tags>
+		<tags>SQuirreL, database, sql, server, wrapper</tags>
 	</metadata>
 </package>
